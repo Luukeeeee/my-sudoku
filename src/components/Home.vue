@@ -29,7 +29,7 @@
             <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
                 <v-btn class="grey lighten-4" text @click="load">load</v-btn>
             </v-col>
-            <v-col cols="12" lg="4" md="4">
+            <v-col cols="12" lg="3" md="3">
                 Choose sudoku level:
                 <v-menu offset-y>
                     <template v-slot:activator="{ on, attrs }">

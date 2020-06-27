@@ -1,7 +1,7 @@
 <template>
 <v-container fill-height justify-center>
     <v-container fill-height justify-center v-if="show">
-        <v-card max-width="500">
+        <v-card max-width="300">
             <v-img src="sudokupic.jpg"></v-img>
             <v-card-actions>
                 <v-row class="justify-center">
@@ -16,17 +16,43 @@
     </v-container>
     <v-container fill-height justify-center v-if="!show">
         <v-row>
-            <v-col cols="12" lg="2" md="2">
+            <v-col cols="12" lg="3" md="3" sm="3" xs="3" x-small>
                 <h3>Level:{{ level }}</h3>
             </v-col>
-            <v-col cols="12" lg="2" md="2">
+            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
                 <v-btn class="grey lighten-4" text @click="clear">clear all</v-btn>
             </v-col>
-            <v-col cols="12" lg="2" md="2">
+            <v-spacer></v-spacer>
+            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
                 <v-btn class="grey lighten-4" text @click="save">save</v-btn>
             </v-col>
-            <v-col cols="12" lg="2" md="2">
+            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
                 <v-btn class="grey lighten-4" text @click="load">load</v-btn>
+            </v-col>
+            <v-col cols="12" lg="4" md="4">
+                Choose sudoku level:
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn color="success" text dark v-bind="attrs" v-on="on">
+                            {{chooseLevel}}
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item @click="start('any')">
+                            <v-list-item-title>any</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="start('easy')">
+                            <v-list-item-title>easy</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="start('medium')">
+                            <v-list-item-title>medium</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="start('hard')">
+                            <v-list-item-title>hard</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+                <!-- <StartBtn color="primary" text="easy" v-on:start="start('easy')" /> -->
             </v-col>
         </v-row>
         <div id="plate" color="grey lighten-5">
@@ -48,14 +74,16 @@
         <v-dialog v-model="dialog" scrollable :overlay="false" max-width="500px" transition="dialog-transition">
             <v-card width="400" height="300">
                 <v-card-text>
-                  <v-container fill-height justify-center>
-                    <span class="title" style="color: red">{{msg}}</span>
-                  </v-container>            
+                    <v-container fill-height justify-center>
+                        <span class="title" style="color: red">{{msg}}</span>
+                    </v-container>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text class="primary ml-8 mb-8" icon dark @click="() => this.dialog = false"><v-icon>mdi-arrow-left</v-icon></v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn class="success mr-8 mb-8" @click="() => {this.start(); this.dialog = false}" text>next</v-btn>
+                    <v-btn text class="primary ml-8 mb-8" icon dark @click="() => this.dialog = false">
+                        <v-icon>mdi-arrow-left</v-icon>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn class="success mr-8 mb-8" @click="() => {this.start(this.chooseLevel); this.dialog = false}" text>next</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -65,17 +93,42 @@
 
 <script>
 import axios from "axios";
+//import StartBtn from "./StartBtn.vue"
 
 export default {
     name: "Home",
+    // components: {
+    //     StartBtn
+    // },
     methods: {
-        start() {
-            axios.get('js/data.json').then((response) => (this.data = response.data)).then(() => {
-                let i = Math.floor(Math.random() * this.data.length);
+        start(e) {
+            axios.get('js/data.json').then((response) => {
+                this.data = response.data
+            }).then(() => {
+                let i = 0;
                 // need this otherwise this.data would be changed according to change of this.content
-                this.content = JSON.parse(JSON.stringify(this.data[i].content));
+                if (e == "easy") {
+                    i = Math.floor(Math.random() * this.easy.length);
+                    this.content = JSON.parse(JSON.stringify(this.easy[i].content));
+                    this.level = "easy";
+                    this.chooseLevel = "easy";
+                } else if (e == "medium") {
+                    i = Math.floor(Math.random() * this.medium.length);
+                    this.content = JSON.parse(JSON.stringify(this.medium[i].content));
+                    this.level = "medium";
+                    this.chooseLevel = "medium";
+                } else if (e == "hard") {
+                    i = Math.floor(Math.random() * this.hard.length);
+                    this.content = JSON.parse(JSON.stringify(this.hard[i].content));
+                    this.level = "hard";
+                    this.chooseLevel = "hard";
+                } else {
+                    i = Math.floor(Math.random() * this.data.length);
+                    this.content = JSON.parse(JSON.stringify(this.data[i].content));
+                    this.level = this.data[i].level;
+                    this.chooseLevel = "any";
+                }
                 this.number = i;
-                this.level = this.data[i].level;
                 this.show = false;
             })
         },
@@ -109,6 +162,7 @@ export default {
             this.show = false;
             this.content = JSON.parse(window.localStorage.getItem("content"));
             this.level = window.localStorage.getItem("level");
+            this.chooseLevel = window.localStorage.getItem("level");
             this.number = window.localStorage.getItem("number");
         }
     },
@@ -311,6 +365,7 @@ export default {
     data() {
         return {
             dialog: false,
+            chooseLevel: "Any",
             msg: "",
             show: true,
             level: "",
@@ -401,14 +456,14 @@ export default {
 
 @media only screen and (max-width: 445px) {
     #plate {
-        border: black 0.08vw solid;
-        width: 90vw;
-        height: 90vw;
+        border: black 0.1vw solid;
+        width: 95vw;
+        height: 86.8vw;
     }
 
     .btn {
-        width: 9.965vw;
-        height: 9.965vw;
+        width: 9.58vw;
+        height: 9.58vw;
         border: 0.05vw #f5f5f5 solid;
         position: relative;
         font-size: 5vw;

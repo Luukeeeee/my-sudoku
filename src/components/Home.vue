@@ -16,19 +16,22 @@
     </v-container>
     <v-container fill-height justify-center v-if="!show">
         <v-row>
-            <v-col cols="12" lg="3" md="3" sm="3" xs="3" x-small>
+            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
                 <h3>Level:{{ level }}</h3>
             </v-col>
-            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
-                <v-btn class="grey lighten-4" text @click="clear">clear all</v-btn>
+            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
+                <v-btn class="grey lighten-4" text @click="clear">clear</v-btn>
             </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
+            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
                 <v-btn class="grey lighten-4" text @click="save">save</v-btn>
             </v-col>
-            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
+            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
                 <v-btn class="grey lighten-4" text @click="load">load</v-btn>
             </v-col>
+            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
+                <v-btn class="grey lighten-4" text @click="make">form your own sudoku</v-btn>
+            </v-col>
+            <v-spacer></v-spacer>
             <v-col cols="12" lg="3" md="3">
                 Choose sudoku level:
                 <v-menu offset-y>
@@ -94,6 +97,7 @@
 <script>
 import axios from "axios";
 //import StartBtn from "./StartBtn.vue"
+const script = require("@/script.js")
 
 export default {
     name: "Home",
@@ -101,6 +105,17 @@ export default {
     //     StartBtn
     // },
     methods: {
+        make() {
+            let interval = setInterval(() => {
+                let result = script.test();
+                if (result[0]) {
+                    clearInterval(interval);
+                    this.content = JSON.parse(JSON.stringify(result[1]));
+                    this.level = result[2];
+                }
+                script.test();
+            }, 7);
+        },
         start(e) {
             axios.get('js/data.json').then((response) => {
                 this.data = response.data
@@ -165,9 +180,6 @@ export default {
             this.chooseLevel = window.localStorage.getItem("level");
             this.number = window.localStorage.getItem("number");
         }
-    },
-    beforeMount() {
-
     },
     computed: {
         easy() {

@@ -168,7 +168,15 @@ export default {
             }
         },
         clear() {
-            this.content = JSON.parse(JSON.stringify(this.data[this.number].content));
+            let arr = this.content;
+            arr.forEach(item => {
+                if(!item.disable) {
+                    item.num = "?";
+                    item.color = "white--text";
+                }
+            })
+            this.content = arr;
+            //this.content = JSON.parse(JSON.stringify(this.data[this.number].content));
         },
         save() {
             window.localStorage.setItem("content", JSON.stringify(this.content));

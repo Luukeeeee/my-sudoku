@@ -16,23 +16,22 @@
     </v-container>
     <v-container fill-height justify-center v-if="!show">
         <v-row>
-            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
+            <v-col cols="12" lg="2" md="3" sm="3" xs="2" x-small>
                 <h3>Level:{{ level }}</h3>
             </v-col>
-            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
+            <v-col cols="12" lg="1" md="2" sm="2" xs="1" x-small>
                 <v-btn class="grey lighten-4" text @click="clear">clear</v-btn>
             </v-col>
-            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
+            <v-col cols="12" lg="1" md="2" sm="2" xs="1" x-small>
                 <v-btn class="grey lighten-4" text @click="save">save</v-btn>
             </v-col>
-            <v-col cols="12" lg="1" md="1" sm="1" xs="1" x-small>
+            <v-col cols="12" lg="1" md="2" sm="2" xs="1" x-small>
                 <v-btn class="grey lighten-4" text @click="load">load</v-btn>
             </v-col>
-            <v-col cols="12" lg="2" md="2" sm="2" xs="2" x-small>
-                <v-btn class="grey lighten-4" text @click="make">form your own sudoku</v-btn>
+            <v-col cols="12" lg="3" md="5" sm="5" xs="2" x-small>
+                <v-btn class="grey lighten-4" text @click="make" :loading="loading">form your own sudoku</v-btn>
             </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="12" lg="3" md="3">
+            <v-col cols="12" lg="3" md="5" sm="5">
                 Choose sudoku level:
                 <v-menu offset-y>
                     <template v-slot:activator="{ on, attrs }">
@@ -106,15 +105,18 @@ export default {
     // },
     methods: {
         make() {
+            this.loading = true;
             let interval = setInterval(() => {
                 let result = script.test();
-                if (result[0]) {
-                    clearInterval(interval);
+                if (result) {
+                    if(result[0]) {clearInterval(interval);
                     this.content = JSON.parse(JSON.stringify(result[1]));
                     this.level = result[2];
+                    this.loading = false;}
+                    
                 }
                 script.test();
-            }, 7);
+            }, 1);
         },
         start(e) {
             axios.get('js/data.json').then((response) => {
@@ -376,6 +378,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             dialog: false,
             chooseLevel: "Any",
             msg: "",

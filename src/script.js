@@ -63,7 +63,7 @@ var test = function () {
     if (arr[80] != '80') {
         for (let i = 0; i < arr.length; i++) {
             // control levels formed larger harder create
-            if (Math.random() < 0.63) {
+            if (Math.random() < 0.59) {
                 arr[i] = 0;
             }
         }
@@ -75,7 +75,7 @@ var test = function () {
                 zeroArr.push(0);
             }
         });
-        if (zeroArr.length > 48) {
+        if (zeroArr.length > 45) {
             levels = 'hard';
         } else if (zeroArr.length > 39) {
             levels = 'medium';

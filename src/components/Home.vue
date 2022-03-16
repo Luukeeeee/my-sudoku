@@ -69,6 +69,7 @@
                         <v-btn v-for="n in 9" :key="n" text @click="chooseNumber(index, n)">
                             {{ n }}
                         </v-btn>
+                        <v-btn text @click="cancelNumber(index)" class="cancel-btn">cancel</v-btn>
                     </v-container>
                 </v-card>
             </v-menu>
@@ -161,11 +162,15 @@ export default {
                             return;
                         }
                         this.dialog = true;
-                        this.msg = "Congradulations!! You have solved this sudoku!!";
+                        this.msg = "Congratulations!! You have solved this sudoku!!";
                     }
                 }
 
             }
+        },
+        cancelNumber(index) {
+            this.content[index].num = "?";
+            this.content[index].color = "white--text";
         },
         clear() {
             let arr = this.content;
@@ -491,5 +496,9 @@ export default {
         position: relative;
         font-size: 5vw;
     }
+}
+
+.cancel-btn {
+    width: 100%;
 }
 </style>
